@@ -1,6 +1,7 @@
 //module dependencies
 var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp'),
+    passportLocalMongoose = require('passport-local-mongoose'),
     Schema = mongoose.Schema;
 
 
@@ -13,8 +14,9 @@ var userSchema = new Schema({
     fb_at    : { type: String, default: ' ', required:true },
     pet      : { type: Schema.Types.ObjectId, default: null, ref: 'Pet' },
     push_token    : { type: String, default: ' ', required:false },
-    platform    : { type: String, default: 'none', required:true },
+    platform    : { type: String, default: 'none', required:true }
 });
 userSchema.plugin(timestamps);
+userSchema.plugin(passportLocalMongoose);
 
 mongoose.model('User', userSchema);

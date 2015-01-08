@@ -1,5 +1,6 @@
 // module dependencies
 var express = require('express'),
+    passport = require('passport'),
     cors = require('cors');
 
 module.exports = function (app, config) {
@@ -9,9 +10,15 @@ module.exports = function (app, config) {
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(require('connect-multiparty')());
-    app.use(express.methodOverride());
-    app.use(express.cookieParser('d1A76YqsMksz6Mf5mTJI1b530EXjP87d'));
+    //app.use(express.methodOverride());
+    //app.use(express.cookieParser('d1A76YqsMksz6Mf5mTJI1b530EXjP87d'));
     //app.use(express.session({ secret: 'd1A76YqsMksz6Mf5mTJI1b530EXjP87d' }));
+    app.use(express.cookieParser());
+    app.use(express.bodyParser());
+
+    app.use(express.session({ secret: 'securedsession' }));
+    require('../config/Auth')(app);
+
     app.use(cors({
         credentials: true,
         origin: function(origin, callback){

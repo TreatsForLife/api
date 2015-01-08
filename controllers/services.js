@@ -116,4 +116,4 @@ exports.push_notification_ios = function (req, res) {
 
 exports.ping = function (req, res) {
     res.send('connected');
-}
+  }

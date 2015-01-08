@@ -7,15 +7,17 @@ var cors = require('cors'),
     treats = require('../controllers/treats'),
     donations = require('../controllers/donations'),
     kennels = require('../controllers/kennels');
+mongoose = require('mongoose'),
+    User = mongoose.model('User');
 
 
-module.exports = function(app) {
+module.exports = function (app) {
     //cors pre-flight
     app.options('*', cors());
 
     // services
     app.get('/ping', services.ping);
-    app.namespace('/service', function() {
+    app.namespace('/service', function () {
         app.get('/ping', services.ping);
         app.get('/test_push/:reg_id', services.push_notification);
         app.get('/test_push_ios/:token', services.push_notification_ios);
@@ -25,7 +27,7 @@ module.exports = function(app) {
     // pets
     app.get('/', pets.list);
     app.get('/pets', pets.list);
-    app.namespace('/pet', function() {
+    app.namespace('/pet', function () {
         app.get('/', pets.list);
         app.get('/lonely', pets.lonely);
         app.get('/adopted', pets.adopted);
@@ -37,7 +39,7 @@ module.exports = function(app) {
 
 
     //users
-    app.namespace('/user', function() {
+    app.namespace('/user', function () {
         app.get('/', users.list);
         app.get('/:id', users.get);
         app.post('/', users.create);
@@ -46,7 +48,7 @@ module.exports = function(app) {
     });
 
     //media
-    app.namespace('/media', function() {
+    app.namespace('/media', function () {
         app.get('/', media.list);
         app.get('/last', media.last);
         app.get('/:id', media.get);
@@ -56,7 +58,7 @@ module.exports = function(app) {
     });
 
     //kennels
-    app.namespace('/kennel', function() {
+    app.namespace('/kennel', function () {
         app.get('/', kennels.list);
         app.get('/:id', kennels.get);
         app.post('/', kennels.create);
@@ -65,7 +67,7 @@ module.exports = function(app) {
     });
 
     //treats
-    app.namespace('/treat', function() {
+    app.namespace('/treat', function () {
         app.get('/', treats.list);
         app.get('/:id', treats.get);
         app.post('/', treats.create);
@@ -74,7 +76,7 @@ module.exports = function(app) {
     });
 
     //donations
-    app.namespace('/donation', function() {
+    app.namespace('/donation', function () {
         app.get('/', donations.list);
         app.get('/given', donations.given);
         app.get('/pending', donations.pending);
@@ -83,5 +85,33 @@ module.exports = function(app) {
         app.post('/approve', donations.approve);
         app.put('/:id', donations.update);
         app.del('/:id', donations.delete);
+    });
+
+    app.get('/loggedin', function (req, res) {
+        res.send(req.isAuthenticated() ? req.user : '0');
+    });
+    // route to log in
+    app.post('/login', passport.authenticate('local'), function (req, res) {
+        res.send(req.user);
+    });
+    app.post('/register', function (req, res) {
+        User.register(new User({
+            username: req.body.username,
+            email: req.body.email
+        }), req.body.password, function (err, account) {
+            if (err) {
+                res.status(400).send(err);
+            }
+            else
+                res.send(account)
+            //res.send(req.isAuthenticated() ? req.user : '0');
+        });
+    });
+
+
+// route to log out
+    app.post('/logout', function (req, res) {
+        req.logOut();
+        res.send(200);
     });
 };
