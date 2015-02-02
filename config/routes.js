@@ -7,8 +7,9 @@ var cors = require('cors'),
     treats = require('../controllers/treats'),
     donations = require('../controllers/donations'),
     kennels = require('../controllers/kennels');
-mongoose = require('mongoose'),
+    mongoose = require('mongoose'),
     User = mongoose.model('User');
+    comments = require('../controllers/comments');
 
 
 module.exports = function (app) {
@@ -85,6 +86,11 @@ module.exports = function (app) {
         app.post('/approve', donations.approve);
         app.put('/:id', donations.update);
         app.del('/:id', donations.delete);
+    });
+
+    app.namespace('/comment', function () {
+        app.post('/', comments.create);
+        app.get('/:id', comments.commentsForPet);
     });
 
     app.get('/loggedin', function (req, res) {

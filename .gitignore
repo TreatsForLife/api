@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 lib-cov
 *.seed
 *.log
@@ -22,4 +22,4 @@ node_modules
 .sass-cache
 app/bower_components
 .idea/
->>>>>>> c313336fd14c0e59149fa71e2dd86b5fbe641794
+
